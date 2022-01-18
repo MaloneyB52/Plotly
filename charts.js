@@ -28,6 +28,7 @@ function init() {
 // Initialize the dashboard
 init();
 
+
 function optionChanged(newSample) {
   // Fetch new data each time a new sample is selected
   buildMetadata(newSample);
@@ -108,30 +109,94 @@ function buildCharts(sample) {
 
     // 10. Use Plotly to plot the data with the layout. 
     Plotly.newPlot("bar", barData, barLayout);
-    
-  });
-}
-// Bar and Bubble charts
-// Create the buildCharts function.
-function buildCharts(sample) {
-  // Use d3.json to load and retrieve the samples.json file 
-  d3.json("samples.json").then((data) => {
-    
 
-    // Deliverable 1 Step 10. Use Plotly to plot the data with the layout. 
-    Plotly.newPlot(); 
-
-    // 1. Create the trace for the bubble chart.
     var bubbleData = [
-   
+      {
+        x: otu_ids,
+        y: sample_values,
+        text: otu_labels,
+        mode: "markers",
+        marker: {
+          size: sample_values,
+          color: otu_ids,
+          colorscale: "Earth"
+        }
+      }
     ];
-
-    // 2. Create the layout for the bubble chart.
+    // Create the layout for the bubble chart.
     var bubbleLayout = {
-      
+      title: "Bacteria Cultures Per Sample",
+      margin: { t: 0 },
+      hovermode: "closest",
+      xaxis: { title: "OTU ID" },
+      margin: { t: 30 }
     };
+    // Use Plotly to plot the data with the layout.
+    Plotly.newPlot("bubble", bubbleData, bubbleLayout);
+    
 
-    // 3. Use Plotly to plot the data with the layout.
-    Plotly.newPlot(); 
-  });
+  var metadataArray = data.metadata.filter(sampleObj => sampleObj.id == sample);
+  var metadata = metadataArray[0];
+  var frequency = parseFloat(metadata.wfreq);
+
+  var gaugeData = [
+      {
+        domain: { x: [0, 1], y: [0, 1] },
+        value: frequency,
+        title: { text: "<b>Belly Button Washing Frequency</b> <br> Scrubs per Week" },
+        type: "indicator",
+        mode: "gauge+number",
+        gauge: {
+          axis: { range: [null, 10] },
+          bar: { color: "black" },
+          steps: [
+            { range: [0, 2], color: "red" },
+            { range: [2, 4], color: "orange" },
+            { range: [4, 6], color: "yellow" },
+            { range: [6, 8], color: "yellowgreen" },
+            { range: [8, 10], color: "green" }
+          ],
+        }
+      }
+    ];
+    // 5. Create the layout for the gauge chart.
+    var gaugeLayout = {
+      width: 500,
+      height: 425,
+      margin: { t: 0, b: 0 }
+    };
+    // 6. Use Plotly to plot the gauge data and layout.
+    Plotly.newPlot("gauge", gaugeData, gaugeLayout);
+
+
+  var gaugeData = [
+    {
+      domain: { x: [0, 1], y: [0, 1] },
+      value: frequency,
+      title: { text: "<b>Belly Button Washing Frequency</b> <br> Scrubs per Week" },
+      type: "indicator",
+      mode: "gauge+number",
+      gauge: {
+        axis: { range: [null, 10] },
+        bar: { color: "black" },
+        steps: [
+          { range: [0, 2], color: "red" },
+          { range: [2, 4], color: "orange" },
+          { range: [4, 6], color: "yellow" },
+          { range: [6, 8], color: "yellowgreen" },
+          { range: [8, 10], color: "green" }
+        ],
+      }
+    }
+  ];
+  // 5. Create the layout for the gauge chart.
+  var gaugeLayout = {
+    width: 500,
+    height: 425,
+    margin: { t: 0, b: 0 }
+  };
+  // 6. Use Plotly to plot the gauge data and layout.
+  Plotly.newPlot("gauge", gaugeData, gaugeLayout);
+
+});
 }
